@@ -1,0 +1,18 @@
+# Never bake secrets or local state into the image — the container generates
+# its own .env at startup from injected environment variables (see Dockerfile).
+.env
+.env.*
+telegram-subscribers.json
+metrics.jsonl
+
+# Host-side build/runtime artifacts (rebuilt inside the container)
+node_modules
+**/node_modules
+**/dist
+.cache
+
+# Version control and editor noise
+.git
+.github
+.idea
+.vscode

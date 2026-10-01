@@ -1,0 +1,43 @@
+[Unit]
+Description=Morpho Blue liquidation bot (Robinhood 4663)
+Documentation=file:///opt/morpho-blue-liquidation-bot/RUNBOOK.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/morpho-blue-liquidation-bot
+
+# EnvFile order matters: later files override earlier ones. Chain secrets live
+# in liquidation.env (0600); run-mode knobs come from a drop-in (see
+# deploy/README.md) — `systemctl edit liquidation` writes to
+# /etc/systemd/system/liquidation.service.d/*.conf, which systemd reads
+# automatically and which overrides EnvironmentFile values.
+EnvironmentFile=/etc/liquidation/liquidation.env
+
+# Build once at start; the lockfile is frozen so this is reproducible.
+ExecStartPre=/usr/bin/env pnpm install --frozen-lockfile
+ExecStartPre=/usr/bin/env pnpm build
+ExecStart=/usr/bin/env pnpm liquidate
+
+Restart=on-failure
+# Back off so a persistently failing start doesn't hot-loop (and burn RPC quota).
+RestartSec=15s
+# An uncaught exception exits the process deliberately (script.ts) — that is a
+# crash, and Restart=on-failure covers it. Never Restart=always: a clean exit
+# (e.g. the daily-loss circuit breaker shutting down) must stay down.
+
+# Hardening: the bot only needs outbound network and its own files.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/morpho-blue-liquidation-bot /var/log/liquidation
+PrivateTmp=true
+
+# Logging to journald; metrics JSONL goes where METRICS_PATH points.
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=liquidation
+
+[Install]
+WantedBy=multi-user.target

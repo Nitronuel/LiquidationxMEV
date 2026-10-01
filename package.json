@@ -1,0 +1,72 @@
+{
+  "name": "morpho-blue-liquidation-bot",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "pnpm --filter '@morpho-blue-liquidation-bot/*' lint",
+    "prepare": "husky",
+    "test:liquidity-venues": "pnpm build && vitest --dir apps/liquidity-venues",
+    "test:pricers": "pnpm build && vitest --dir apps/pricers",
+    "test:client": "pnpm build && vitest --dir apps/client",
+    "test:fork": "tsx apps/client/src/demo/forkDemo.ts --env-file=.env --assert",
+    "canary": "tsx apps/client/src/demo/lifiCanary.ts --env-file=.env",
+    "test:data-providers": "pnpm build && vitest --dir apps/data-providers",
+    "test:config": "pnpm build:config && vitest --dir apps/config",
+    "summarize:metrics": "tsx apps/client/scripts/summarizeMetrics.ts",
+    "diff:metrics": "tsx apps/client/scripts/diffMetrics.ts",
+    "build": "pnpm build:config && pnpm --parallel --filter @morpho-blue-liquidation-bot/data-providers --filter @morpho-blue-liquidation-bot/liquidity-venues --filter @morpho-blue-liquidation-bot/pricers build",
+    "build:config": "pnpm --filter @morpho-blue-liquidation-bot/config build",
+    "build:data-providers": "pnpm --filter @morpho-blue-liquidation-bot/data-providers build",
+    "build:liquidity-venues": "pnpm --filter @morpho-blue-liquidation-bot/liquidity-venues build",
+    "build:pricers": "pnpm --filter @morpho-blue-liquidation-bot/pricers build",
+    "deploy:executor": "pnpm build && tsx apps/client/src/deployExecutor.ts",
+    "validate:4663": "tsx apps/data-providers/scripts/live-check.ts",
+    "liquidate": "pnpm build && tsx apps/client/src/script.ts --env-file=.env",
+    "skim": "pnpm build && tsx apps/client/src/skim.ts --env-file=.env"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix"
+    ]
+  },
+  "dependencies": {
+    "@morpho-org/blue-sdk": "^5.12.1",
+    "@morpho-org/morpho-ts": "^2.8.0",
+    "tsx": "^4.19.3",
+    "viem": "^2.46.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.20.0",
+    "@types/node": "^20.9.0",
+    "concurrently": "^9.1.2",
+    "dotenv": "^16.4.7",
+    "eslint": "^9.20.1",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-import-resolver-typescript": "^3.8.3",
+    "eslint-plugin-import-x": "^4.6.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
+    "prettier": "3.5.1",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.24.1",
+    "vitest": "^3.0.9"
+  },
+  "engines": {
+    "node": ">=18.14"
+  },
+  "pnpm": {
+    "packageExtensions": {
+      "@uniswap/v4-sdk@*": {
+        "dependencies": {
+          "ethers": "5.7.2"
+        }
+      }
+    }
+  },
+  "workspaces": [
+    "apps/*"
+  ],
+  "packageManager": "pnpm@11.0.9"
+}
