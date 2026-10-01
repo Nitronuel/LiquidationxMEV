@@ -8,7 +8,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -25,7 +25,7 @@ jobs:
         run: pnpm lint
 
   config:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -42,7 +42,7 @@ jobs:
         run: pnpm test:config
 
   liquidity-venues:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -56,9 +56,7 @@ jobs:
       - name: Install dependencies
         run: pnpm i --frozen-lockfile
       - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@c7450ba673e133f5ee30098b3b54f444d3a2ca2d # v1
-        with:
-          version: "1.5.1"
+        uses: foundry-rs/foundry-toolchain@v1
       - name: Run liquidity venue tests
         run: pnpm test:liquidity-venues
         env:
@@ -66,7 +64,7 @@ jobs:
           RPC_URL_999: ${{ secrets.RPC_URL_999 }}
 
   pricers:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -80,16 +78,14 @@ jobs:
       - name: Install dependencies
         run: pnpm i --frozen-lockfile
       - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@c7450ba673e133f5ee30098b3b54f444d3a2ca2d # v1
-        with:
-          version: "1.5.1"
+        uses: foundry-rs/foundry-toolchain@v1
       - name: Run pricers tests
         run: pnpm test:pricers
         env:
           RPC_URL_1: ${{ secrets.RPC_URL_1 }}
 
   client:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -103,16 +99,14 @@ jobs:
       - name: Install dependencies
         run: pnpm i --frozen-lockfile
       - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@c7450ba673e133f5ee30098b3b54f444d3a2ca2d # v1
-        with:
-          version: "1.5.1"
+        uses: foundry-rs/foundry-toolchain@v1
       - name: Run liquidation execution tests
         run: pnpm test:client
         env:
           RPC_URL_1: ${{ secrets.RPC_URL_1 }}
 
   data-providers:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -126,9 +120,7 @@ jobs:
       - name: Install dependencies
         run: pnpm i --frozen-lockfile
       - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@c7450ba673e133f5ee30098b3b54f444d3a2ca2d # v1
-        with:
-          version: "1.5.1"
+        uses: foundry-rs/foundry-toolchain@v1
       - name: Build config package
         run: pnpm build:config
       - name: Run data provider tests
